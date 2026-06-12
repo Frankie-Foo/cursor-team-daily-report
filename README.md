@@ -2,6 +2,13 @@
 
 10 人团队 Cursor 工作日报：解析 agent-transcripts → PostgreSQL → Git 备份。
 
+## 克隆仓库
+
+```bash
+git clone https://github.com/Frankie-Foo/cursor-team-daily-report.git
+cd cursor-team-daily-report
+```
+
 ## 快速开始
 
 ```powershell
