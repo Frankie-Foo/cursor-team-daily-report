@@ -33,19 +33,34 @@ def load_env() -> None:
 
 def get_username() -> str:
     """从环境变量或 config/user.json 读取用户名。"""
+    profile = load_user_profile()
     env_user = os.getenv("CURSOR_REPORT_USER", "").strip()
     if env_user:
         return env_user
-
-    config_path = repo_root() / "config" / "user.json"
-    if config_path.exists():
-        data = json.loads(config_path.read_text(encoding="utf-8"))
-        username = str(data.get("username", "")).strip()
-        if username:
-            return username
-
+    username = str(profile.get("username", "")).strip()
+    if username:
+        return username
     raise ValueError(
         "未配置用户名。请设置 CURSOR_REPORT_USER 或创建 config/user.json"
+    )
+
+
+def load_user_profile() -> dict[str, Any]:
+    """读取 config/user.json。"""
+    config_path = repo_root() / "config" / "user.json"
+    if config_path.exists():
+        return json.loads(config_path.read_text(encoding="utf-8"))
+    return {}
+
+
+def get_cursor_workspace() -> str:
+    """读取成员日常 Cursor 项目路径。"""
+    profile = load_user_profile()
+    workspace = str(profile.get("cursor_workspace", "")).strip()
+    if workspace:
+        return workspace
+    raise ValueError(
+        "未配置 cursor_workspace。请在 config/user.json 填写日常 Cursor 项目路径"
     )
 
 

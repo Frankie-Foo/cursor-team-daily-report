@@ -30,7 +30,7 @@ from parse_transcripts import (
     parse_session_file,
     resolve_target_date,
 )
-from report_io import daily_dir, get_username, render_daily_markdown, team_reports_root, write_json, write_markdown
+from report_io import daily_dir, get_cursor_workspace, get_username, render_daily_markdown, repo_root, write_json, write_markdown
 
 
 def parse_args() -> argparse.Namespace:
@@ -101,7 +101,9 @@ def main() -> None:
     args = parse_args()
     target_date = resolve_target_date(args.date, args.timezone)
     username = args.username.strip() or get_username()
-    transcripts_dir = discover_transcripts_dir(args.workspace)
+    workspace = args.workspace.strip() or get_cursor_workspace()
+    workspace_path = Path(workspace).resolve()
+    transcripts_dir = discover_transcripts_dir(str(workspace_path))
 
     sessions = []
     for main_file, subagent_files in collect_session_files(transcripts_dir):
@@ -120,7 +122,7 @@ def main() -> None:
         target_date,
         username,
         args.timezone,
-        Path(args.workspace).resolve() if args.workspace else team_reports_root().parent,
+        workspace_path,
     )
     report = refine_summary_with_ai(report)
 
