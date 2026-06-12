@@ -1,0 +1,13 @@
+.env
+.env.*
+!.env.example
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+
+.tmp/*
+!.tmp/.gitkeep
+config/user.json
