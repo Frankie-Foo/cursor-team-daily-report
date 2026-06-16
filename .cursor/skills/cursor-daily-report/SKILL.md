@@ -1,12 +1,21 @@
 ---
 name: cursor-daily-report
 description: >-
-  生成并发布 Cursor 团队日报：解析 agent-transcripts、写入 PostgreSQL、同步 Git。
+  生成并发布 Cursor 团队日报：解析 agent-transcripts、写入 PostgreSQL、可选 Git 同步。
   Use when user asks for daily cursor report, team activity summary, end-of-day
   cursor summary, or when scheduled automation runs the daily report workflow.
 ---
 
 # Cursor 团队日报 Skill
+
+## 角色区分
+
+| 角色 | 发布命令 |
+|------|----------|
+| **同事** | `python scripts/publish_daily.py --date today --db-only` |
+| **主管 (Frank)** | `python scripts/publish_daily.py --date today --git-push` 或定时 `export_db_to_git.py --push` |
+
+同事只写数据库；Git 由主管从 DB 导出后统一 push。详见 `docs/主管Git同步指南.md`。
 
 ## 适用场景
 
@@ -15,7 +24,7 @@ description: >-
 
 ## 前置检查
 
-执行前确认仓库根目录存在：
+执行前确认仓库/Skill 根目录存在：
 
 - `config/user.json` — 含 `username`、`cursor_workspace`
 - `.env` — 含数据库连接信息
@@ -31,8 +40,8 @@ python -c "import sys; sys.path.insert(0,'scripts'); from report_io import get_u
 ```
 - [ ] 1. 解析今日 transcripts
 - [ ] 2. AI 精炼 daily_summary（详细版，中文，3-6 条）
-- [ ] 3. 发布：写文件 + 入库 + git push
-- [ ] 4. 回报结果路径
+- [ ] 3. 发布：同事 --db-only / 主管 --git-push
+- [ ] 4. 回报结果
 ```
 
 ### Step 1：解析
@@ -55,37 +64,25 @@ python scripts/parse_transcripts.py --date today --workspace "<cursor_workspace>
 - 更新 `key_topics`（3-8 个）
 - 删除 `_raw_sessions` 后再发布
 
-**模板示例：**
-
-```markdown
-今日 Cursor 工作摘要：
-- 【数据岗位 PDCA 脚本优化】使用 Read/Shell 调整 publish 流程，已完成
-- 【团队日报 Skill 部署】编写成员文档并 push 到 GitHub，已完成
-```
-
 ### Step 3：发布
 
-优先使用一键命令（自动读 user.json）：
+**同事（默认）：**
+
+```bash
+python scripts/publish_daily.py --date today --db-only
+```
+
+**主管：**
 
 ```bash
 python scripts/publish_daily.py --date today --git-push
 ```
 
-若 Step 2 已手工改好 JSON，写入 `daily/<username>/YYYY-MM-DD.json` 后：
-
-```bash
-python scripts/db_writer.py --file daily/<username>/YYYY-MM-DD.json --type daily
-python scripts/git_sync.py
-```
+或批量同步全员：`python scripts/export_db_to_git.py --date today --push`
 
 ### Step 4：回报
 
-向用户说明：
-
-- 用户名、日期
-- 会话数 / 轮次
-- 文件路径
-- 是否已入库、已 push
+向用户说明：用户名、日期、会话数/轮次、是否已入库、是否已 push（主管）。
 
 ## 空日报
 
@@ -102,13 +99,11 @@ python scripts/query_team.py --scope
 python scripts/query_team.py --status
 ```
 
-成员无需运行查询；发布只需 `publish_daily.py`。
-
 ## 禁止事项
 
 - 不要把 `.env` 密码写入对话或代码
 - 不要把 `cursor_workspace` 指向本日报仓库
-- 不要跳过 git push（除非用户明确要求）
+- 同事不要 git push
 
 ## 故障排查
 
@@ -116,4 +111,4 @@ python scripts/query_team.py --status
 |------|------|
 | 找不到 transcripts | 检查 `cursor_workspace` 是否为日常业务项目 |
 | 数据库失败 | 检查 `.env` 的 DB_PASSWORD |
-| git push 失败 | 本地 commit 已保留，稍后重跑 `python scripts/git_sync.py` |
+| git push 失败 | 本地 commit 已保留，稍后重跑 `export_db_to_git.py --push` |

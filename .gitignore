@@ -11,3 +11,14 @@ __pycache__/
 .tmp/*
 !.tmp/.gitkeep
 config/user.json
+config/api_tokens.json
+config/member_credentials.json
+config/member_credentials.md
+config/odoo_user_ids.json
+config/_uid_roster_probe.json
+config/.python_cmd.txt
+config/_uid_login_lookup.json
+config/_uid_lookup_results.json
+logs/
+package/
+*.zip

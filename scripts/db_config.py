@@ -37,6 +37,7 @@ def connect(dbname: str | None = None) -> connection:
     if dbname:
         settings = dict(settings)
         settings["dbname"] = dbname
+    settings["connect_timeout"] = int(os.getenv("DB_CONNECT_TIMEOUT", "10"))
     return psycopg2.connect(**settings)
 
 

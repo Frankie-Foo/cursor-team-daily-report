@@ -64,6 +64,28 @@ def get_cursor_workspace() -> str:
     )
 
 
+def get_api_url() -> str:
+    """读取日报 API 地址。"""
+    load_env()
+    url = os.getenv("REPORT_API_URL", "").strip()
+    if url:
+        return url
+    raise ValueError(
+        "未配置 REPORT_API_URL。请在 .env 填写团队日报 API 地址"
+    )
+
+
+def get_api_token() -> str:
+    """读取日报 API Token。"""
+    load_env()
+    token = os.getenv("REPORT_API_TOKEN", "").strip()
+    if token:
+        return token
+    raise ValueError(
+        "未配置 REPORT_API_TOKEN。请向主管索取个人 API Token"
+    )
+
+
 def daily_dir(username: str | None = None) -> Path:
     """返回某用户的 daily 目录。"""
     user = username or get_username()

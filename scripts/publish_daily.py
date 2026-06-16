@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-一键发布日报：解析 transcripts -> 写 JSON/Markdown -> 写入 PostgreSQL -> 可选 git push。
+一键发布日报：解析 transcripts -> 写 JSON/Markdown -> 写入 PostgreSQL / API -> 可选 git push。
 
 用法:
-  python publish_daily.py --date today
-  python publish_daily.py --date 2026-06-12 --git-push
+  python publish_daily.py --date today --api-only    # 同事：只提交 API
+  python publish_daily.py --date today --git-push    # 主管：本地 + DB + push
 """
 
 from __future__ import annotations
@@ -20,7 +20,7 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
-from db_writer import upsert_daily
+from api_client import submit_daily_via_api
 from parse_transcripts import (
     build_daily_report,
     collect_session_files,
@@ -40,8 +40,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--workspace", default="", help="工作区路径")
     parser.add_argument("--username", default="", help="用户名")
     parser.add_argument("--timezone", default="Asia/Shanghai", help="时区")
-    parser.add_argument("--git-push", action="store_true", help="提交并 push 到远程仓库")
-    parser.add_argument("--skip-db", action="store_true", help="跳过 PostgreSQL 写入")
+    parser.add_argument("--git-push", action="store_true", help="提交并 push 到远程仓库（主管用）")
+    parser.add_argument("--api-only", action="store_true", help="仅 POST 到 API，不写本地文件（同事用）")
+    parser.add_argument("--db-only", action="store_true", help="[已废弃] 请改用 --api-only")
+    parser.add_argument("--skip-db", action="store_true", help="跳过远程写入")
     return parser.parse_args()
 
 
@@ -126,18 +128,39 @@ def main() -> None:
     )
     report = refine_summary_with_ai(report)
 
-    out_dir = daily_dir(username)
-    json_path = out_dir / f"{target_date.isoformat()}.json"
-    md_path = out_dir / f"{target_date.isoformat()}.md"
-    write_json(json_path, report)
-    write_markdown(md_path, render_daily_markdown(report))
+    remote_only = args.api_only or args.db_only
+    json_path = None
+    md_path = None
+    if not remote_only:
+        out_dir = daily_dir(username)
+        json_path = out_dir / f"{target_date.isoformat()}.json"
+        md_path = out_dir / f"{target_date.isoformat()}.md"
+        write_json(json_path, report)
+        write_markdown(md_path, render_daily_markdown(report))
 
+    api_response = None
     if not args.skip_db:
-        upsert_daily(report)
+        if args.api_only or args.db_only:
+            api_response = submit_daily_via_api(report)
+        else:
+            from db_writer import upsert_daily
 
-    print(json.dumps({"json": str(json_path), "markdown": str(md_path)}, ensure_ascii=False))
+            upsert_daily(report)
 
-    if args.git_push:
+    result = {
+        "user": username,
+        "date": target_date.isoformat(),
+        "submitted": not args.skip_db,
+        "via": "api" if (args.api_only or args.db_only) and not args.skip_db else "db",
+    }
+    if api_response:
+        result["api"] = api_response
+    if json_path:
+        result["json"] = str(json_path)
+        result["markdown"] = str(md_path)
+    print(json.dumps(result, ensure_ascii=False))
+
+    if args.git_push and json_path and md_path:
         git_push([json_path, md_path])
 
 

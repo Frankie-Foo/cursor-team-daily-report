@@ -1,32 +1,38 @@
 # Cursor 团队日报系统
 
-仓库：https://github.com/Frankie-Foo/cursor-team-daily-report
+## 架构
 
-## 发给成员
-
-| 文档 | 适合谁 | 链接 |
-|------|--------|------|
-| **[Skill安装与使用指南](docs/Skill安装与使用指南.md)** | 同事小白，跟 Cursor 口述安装和使用 | 推荐首选 |
-| [成员部署指南](docs/成员部署指南.md) | 想自己一步步手动操作的人 | 详细版 |
-
-## 主管快速命令
-
-```powershell
-# 今天全员提交状态
-python scripts/query_team.py --status
-
-# 发布自己的日报
-python scripts/publish_today.ps1
+```
+同事 --POST API--> FastAPI --> PostgreSQL --> Frank --Git-->
 ```
 
-## 目录
+| 角色 | 做什么 |
+|------|--------|
+| **同事** | Skill → `POST /api/v1/daily-reports`（只有 API Token） |
+| **主管** | 跑 API 服务、查库、同步 Git |
 
-| 路径 | 说明 |
+## 文档
+
+| 文档 | 谁看 |
 |------|------|
-| `docs/成员部署指南.md` | **发给成员的小白文档** |
-| `.cursor/skills/cursor-daily-report/` | Cursor Skill |
-| `config/team.json` | 14 人名单 |
-| `config/org.json` | 总监/组长权限 |
-| `scripts/` | 全部脚本 |
+| [使用说明.md](package/colleague/使用说明.md) | 同事 |
+| [API接口说明.md](docs/API接口说明.md) | 同事/对接 |
+| [API部署指南.md](docs/API部署指南.md) | Frank |
+| [Docker部署.md](docs/Docker部署.md) | 运维 |
 
-`.env` 和 `config/user.json` 不入 Git。
+## 主管命令
+
+```powershell
+python scripts/generate_api_tokens.py      # 生成 Token
+powershell -File scripts/run_api.ps1         # 启动 API
+powershell -File scripts/frank_sync_git.ps1  # DB -> Git
+python scripts/query_team.py --status        # 提交状态
+```
+
+## 打包发给同事
+
+```powershell
+powershell -File scripts/build_colleague_package.ps1
+```
+
+输出：`package/colleague/cursor-team-daily-report.zip`

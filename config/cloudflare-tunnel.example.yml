@@ -1,0 +1,13 @@
+# Cloudflare Tunnel 配置示例
+# 1. cloudflared tunnel create cursor-team-reports
+# 2. 把 tunnel id 填到下面 tunnel: 行
+# 3. credentials-file 路径在 %USERPROFILE%\.cloudflared\<tunnel-id>.json
+# 4. cloudflared tunnel route dns cursor-team-reports cursor-reports.example.com
+
+tunnel: <YOUR-TUNNEL-UUID>
+credentials-file: C:\Users\frank\.cloudflared\<YOUR-TUNNEL-UUID>.json
+
+ingress:
+  - hostname: cursor-reports.example.com
+    service: http://127.0.0.1:8080
+  - service: http_status:404

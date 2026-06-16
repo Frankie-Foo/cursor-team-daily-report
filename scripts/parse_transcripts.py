@@ -26,7 +26,7 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from report_io import get_username, team_reports_root, write_json
+from report_io import get_cursor_workspace, get_username, team_reports_root, write_json
 
 
 TIMESTAMP_RE = re.compile(
@@ -503,10 +503,12 @@ def main() -> None:
     target_date = resolve_target_date(args.date, args.timezone)
     username = args.username.strip() or get_username()
 
+    workspace = args.workspace.strip() or get_cursor_workspace()
+
     if args.transcripts_dir:
         transcripts_dir = Path(args.transcripts_dir).resolve()
     else:
-        transcripts_dir = discover_transcripts_dir(args.workspace)
+        transcripts_dir = discover_transcripts_dir(workspace)
 
     session_files = collect_session_files(transcripts_dir)
     parsed_sessions: list[dict[str, Any]] = []
@@ -522,7 +524,7 @@ def main() -> None:
             parsed_sessions.append(merged)
 
     parsed_sessions.sort(key=lambda item: item.get("summary", ""))
-    workspace_path = Path(args.workspace).resolve() if args.workspace else team_reports_root().parent
+    workspace_path = Path(workspace).resolve()
     report = build_daily_report(
         parsed_sessions,
         target_date,

@@ -1,0 +1,16 @@
+services:
+  api:
+    build: .
+    container_name: cursor-team-daily-report-api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      API_HOST: "0.0.0.0"
+      API_PORT: "8080"
+    volumes:
+      - ./config/api_tokens.json:/app/config/api_tokens.json:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

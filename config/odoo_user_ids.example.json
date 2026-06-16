@@ -1,0 +1,20 @@
+{
+  "_comment": "username -> Odoo res.users ID。复制为 odoo_user_ids.json 后填写，勿提交 Git。",
+  "users": {
+    "Frank": { "odoo_user_id": 12564, "vertu_name": "刘春梅" },
+    "Haiwen": { "odoo_user_id": 14113, "vertu_name": "何海文" },
+    "Qiqi": { "odoo_user_id": 12650, "vertu_name": "张琪" },
+    "Xianna": { "odoo_user_id": 13749, "vertu_name": "鲜娜" },
+    "Zhangyi": { "odoo_user_id": 12639, "vertu_name": "张懿" },
+    "Yubing": { "odoo_user_id": 13063, "vertu_name": "于冰" },
+    "Sam": { "odoo_user_id": null, "vertu_name": "" },
+    "Gary": { "odoo_user_id": null, "vertu_name": "" },
+    "May": { "odoo_user_id": 12564, "vertu_name": "刘春梅" },
+    "Lina": { "odoo_user_id": 13050, "vertu_name": "DEHDAHOUMAIMA" },
+    "April": { "odoo_user_id": 13122, "vertu_name": "杨晶晶" },
+    "Ivan": { "odoo_user_id": 13063, "vertu_name": "于冰" },
+    "Viki": { "odoo_user_id": null, "vertu_name": "" },
+    "Vivi": { "odoo_user_id": 14344, "vertu_name": "王宇彤" },
+    "Chris": { "odoo_user_id": 12545, "vertu_name": "冯磊-1" }
+  }
+}

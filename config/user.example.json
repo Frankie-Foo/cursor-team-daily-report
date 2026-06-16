@@ -1,5 +1,7 @@
 {
   "username": "你的名字",
+  "display_name": "中文名或展示名",
+  "odoo_user_id": 0,
   "timezone": "Asia/Shanghai",
   "cursor_workspace": "D:/你的Cursor日常项目路径"
 }
