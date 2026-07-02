@@ -7,6 +7,12 @@ $ZipPath = Join-Path $Root "package\server\api_tokens-update.zip"
 New-Item -ItemType Directory -Force -Path (Join-Path $OutDir "config") | Out-Null
 Copy-Item (Join-Path $Root "config\api_tokens.json") (Join-Path $OutDir "config\api_tokens.json") -Force
 
+# 附上运维操作指南 MD
+$opsGuide = Join-Path $Root "docs\运维-Token同步指南.md"
+if (Test-Path $opsGuide) {
+    Copy-Item $opsGuide (Join-Path $OutDir "运维-Token同步指南.md") -Force
+}
+
 $readme = @"
 API Token 热更新包
 ==================
