@@ -14,6 +14,13 @@
     { "username": "Chris", "display_name": "Chris", "role": "member" },
     { "username": "Qiqi", "display_name": "Qiqi", "role": "member", "team": "May组" },
     { "username": "Xianna", "display_name": "Xianna", "role": "member", "team": "May组" },
-    { "username": "Zhangyi", "display_name": "Zhangyi", "role": "member", "team": "May组" }
+    { "username": "Zhangyi", "display_name": "Zhangyi", "role": "member", "team": "May组" },
+    { "username": "Henry", "display_name": "Henry", "role": "member" },
+    { "username": "Safae", "display_name": "Safae", "role": "member" },
+    { "username": "Miranda", "display_name": "Miranda", "role": "member" },
+    { "username": "Bianca", "display_name": "Bianca", "role": "member" },
+    { "username": "Gao", "display_name": "Gao", "role": "member" },
+    { "username": "Terry", "display_name": "Terry", "role": "member" },
+    { "username": "Chen", "display_name": "Chen", "role": "member" }
   ]
 }

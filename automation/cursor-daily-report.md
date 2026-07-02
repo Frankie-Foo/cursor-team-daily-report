@@ -33,6 +33,22 @@ powershell -ExecutionPolicy Bypass -File install_daily_task.ps1
 
 效果：**工作日 17:30** 自动跑 `run_daily.ps1` → 三源聚合 → POST API。
 
+### 仅本地 Cursor 总结（不 POST）
+
+| 字段 | 值 |
+|------|-----|
+| 名称 | Cursor 当日工作总结 |
+| Cron | `30 17 * * 1-5` |
+| 时区 | Asia/Shanghai |
+
+Windows 计划任务（一次性安装）：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_summary_task.ps1
+```
+
+效果：**工作日 17:30** 跑 `run_cursor_summary_local.ps1` → 仅汇总当天 Cursor 会话 → 写入 `daily/<user>/YYYY-MM-DD.md`。
+
 ---
 
 ## 主管 · 可选定时

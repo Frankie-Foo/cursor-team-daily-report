@@ -1,6 +1,9 @@
-# Test connectivity to team daily report API (ASCII-only for PowerShell)
+# Test connectivity to team daily report API.
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot
+if (-not (Test-Path (Join-Path $Root "requirements.txt"))) {
+    $Root = Split-Path -Parent $Root
+}
 Set-Location $Root
 
 if (Test-Path ".env") {
@@ -36,8 +39,8 @@ try {
     Write-Host $_.Exception.Message
     Write-Host ""
     Write-Host "Likely causes:" -ForegroundColor Yellow
-    Write-Host "  1. REPORT_API_URL wrong (need public HTTPS from Frank, not 10.100.x.x)"
-    Write-Host "  2. API / tunnel not running on Frank's server"
+    Write-Host "  1. REPORT_API_URL wrong (need public HTTPS from Frank)"
+    Write-Host "  2. API not deployed yet"
     Write-Host "  3. Typo in .env"
     Write-Host ""
     Write-Host "Ask Frank for the latest public REPORT_API_URL." -ForegroundColor Yellow

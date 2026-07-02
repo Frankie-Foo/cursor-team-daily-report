@@ -26,17 +26,38 @@ def tokens_path() -> Path:
 
 def load_tokens() -> dict[str, str]:
     """
-    读取 username -> token 映射。
+    读取 username -> token 映射（DB 优先，文件兜底）。
 
     @returns 用户名到 token 的字典
     """
+    tokens: dict[str, str] = {}
+
+    try:
+        from db_config import db_cursor
+
+        with db_cursor() as cur:
+            cur.execute(
+                """
+                SELECT 1 FROM information_schema.tables
+                WHERE table_schema = 'public' AND table_name = 'api_tokens'
+                """
+            )
+            if cur.fetchone():
+                cur.execute("SELECT username, token FROM api_tokens")
+                for username, token in cur.fetchall():
+                    tokens[str(username)] = str(token)
+    except Exception:
+        pass
+
     path = tokens_path()
-    if not path.exists():
-        return {}
-    data = json.loads(path.read_text(encoding="utf-8"))
-    if isinstance(data, dict) and "tokens" in data:
-        return {str(k): str(v) for k, v in data["tokens"].items()}
-    return {str(k): str(v) for k, v in data.items()}
+    if path.exists():
+        data = json.loads(path.read_text(encoding="utf-8"))
+        file_tokens = data.get("tokens", data) if isinstance(data, dict) else {}
+        if isinstance(file_tokens, dict):
+            for username, token in file_tokens.items():
+                tokens.setdefault(str(username), str(token))
+
+    return tokens
 
 
 def token_to_username(token: str) -> str | None:

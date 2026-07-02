@@ -8,13 +8,16 @@
     "Zhangyi": { "odoo_user_id": 12639, "vertu_name": "张懿" },
     "Yubing": { "odoo_user_id": 13063, "vertu_name": "于冰" },
     "Sam": { "odoo_user_id": null, "vertu_name": "" },
-    "Gary": { "odoo_user_id": null, "vertu_name": "" },
+    "Gary": { "odoo_user_id": 13355, "vertu_name": "二级复核" },
     "May": { "odoo_user_id": 12564, "vertu_name": "刘春梅" },
     "Lina": { "odoo_user_id": 13050, "vertu_name": "DEHDAHOUMAIMA" },
     "April": { "odoo_user_id": 13122, "vertu_name": "杨晶晶" },
     "Ivan": { "odoo_user_id": 13063, "vertu_name": "于冰" },
     "Viki": { "odoo_user_id": null, "vertu_name": "" },
     "Vivi": { "odoo_user_id": 14344, "vertu_name": "王宇彤" },
-    "Chris": { "odoo_user_id": 12545, "vertu_name": "冯磊-1" }
+    "Chris": { "odoo_user_id": 12545, "vertu_name": "冯磊-1" },
+    "Henry": { "odoo_user_id": 14454, "vertu_name": "李浩然" },
+    "Safae": { "odoo_user_id": 14460, "vertu_name": "Safae Ben M'hamed" },
+    "Miranda": { "odoo_user_id": 14461, "vertu_name": "刘雪梅" }
   }
 }

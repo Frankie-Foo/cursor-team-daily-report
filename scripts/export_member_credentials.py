@@ -36,6 +36,9 @@ DISPLAY_ALIASES: dict[str, list[str]] = {
     "Viki": ["Viki"],
     "Vivi": ["Vivi", "王宇彤", "3568"],
     "Chris": ["Chris", "冯磊", "冯磊-1", "2341"],
+    "Henry": ["Henry", "李浩然", "henry.li@vertu.cn"],
+    "Safae": ["Safae", "Safae Ben M'hamed", "safae@vertu.cn"],
+    "Miranda": ["Miranda", "刘雪梅", "miranda.liu@vertu.cn"],
     "Sam": ["Sam"],
     "Gary": ["Gary"],
     "May": ["May"],
@@ -140,7 +143,7 @@ def build_private_message(member: dict) -> str:
             f"odoo_user_id：{uid}",
             f"API Token：{member['api_token']}",
             "",
-            "解压 zip 后 @ 文件夹给 Cursor，按使用说明安装。",
+            "解压 zip 后双击 SETUP.bat，按提示填 Cursor 项目路径即可。",
         ]
     )
 

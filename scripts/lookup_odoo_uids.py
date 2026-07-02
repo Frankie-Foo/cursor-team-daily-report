@@ -34,6 +34,8 @@ LOGIN_PATTERNS: dict[str, list[str]] = {
     "Viki": ["viki@", "viki."],
     "Vivi": ["vivi@", "vivi."],
     "Chris": ["chris@", "christina@", "chris."],
+    "Safae": ["safae@", "safae."],
+    "Miranda": ["miranda@", "miranda."],
 }
 
 

@@ -13,6 +13,7 @@ from pathlib import Path
 from typing import Any
 
 from fastapi import Depends, FastAPI, Header, HTTPException
+from pydantic import BaseModel, Field
 import psycopg2
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -22,7 +23,7 @@ if str(ROOT) not in sys.path:
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
-from api.auth import token_to_username
+from api.auth import load_tokens, save_tokens, token_to_username
 from api.schemas import DailyReportRequest, DailyReportResponse, prepare_report_payload
 from db_writer import upsert_daily
 
@@ -54,6 +55,48 @@ def require_username(
     if not username:
         raise HTTPException(status_code=401, detail="无效或缺失 API Token")
     return username
+
+
+class TokenSyncRequest(BaseModel):
+    """主管同步 Token 到服务端。"""
+
+    tokens: dict[str, str] = Field(default_factory=dict)
+
+
+def require_director(username: str = Depends(require_username)) -> str:
+    """仅主管 Frank 可调用管理接口。"""
+    if username not in {"Frank", "Sam", "Gary", "May"}:
+        raise HTTPException(status_code=403, detail="仅主管可执行此操作")
+    return username
+
+
+@app.post("/api/v1/admin/tokens/sync")
+def sync_tokens(
+    payload: TokenSyncRequest,
+    _: str = Depends(require_director),
+) -> dict[str, Any]:
+    """
+    主管将 Token 写入 DB + 本地 api_tokens.json（无需 SSH）。
+
+    @param payload username -> token
+    """
+    if not payload.tokens:
+        raise HTTPException(status_code=400, detail="tokens 不能为空")
+
+    from sync_tokens_to_db import ensure_token_table, upsert_tokens
+
+    ensure_token_table()
+    upsert_tokens(payload.tokens)
+
+    merged = load_tokens()
+    merged.update({str(k): str(v) for k, v in payload.tokens.items()})
+    save_tokens(merged)
+
+    return {
+        "ok": True,
+        "synced": sorted(payload.tokens.keys()),
+        "total": len(merged),
+    }
 
 
 @app.get("/api/v1/health")

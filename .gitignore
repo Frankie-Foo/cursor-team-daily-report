@@ -19,6 +19,11 @@ config/_uid_roster_probe.json
 config/.python_cmd.txt
 config/_uid_login_lookup.json
 config/_uid_lookup_results.json
+config/_uid_*_probe.json
+config/_uid_probe_*.json
+_tmp_*.py
 logs/
 package/
+package/colleague/personal/
+config/setup.credentials.json
 *.zip

@@ -31,8 +31,17 @@ Copy-Item (Join-Path $Root "config\user.example.json") (Join-Path $PkgRoot "conf
 Copy-Item (Join-Path $Root "config\colleague.env.example") (Join-Path $PkgRoot ".env.example") -Force
 Copy-Item (Join-Path $Root "scripts\test_api_connection.ps1") (Join-Path $PkgRoot "scripts\test_api_connection.ps1") -Force
 Copy-Item (Join-Path $Root "scripts\collect_my_odoo_uid.ps1") (Join-Path $PkgRoot "scripts\collect_my_odoo_uid.ps1") -Force
+Copy-Item (Join-Path $Root "scripts\setup_oneclick.ps1") (Join-Path $PkgRoot "setup_oneclick.ps1") -Force
+Copy-Item (Join-Path $Root "scripts\SETUP.bat") (Join-Path $PkgRoot "SETUP.bat") -Force
+Copy-Item (Join-Path $Root "config\setup.credentials.example.json") (Join-Path $PkgRoot "config\setup.credentials.example.json") -Force
 
-# 若主管 .env 已配置公网 REPORT_API_URL，写入同事包 .env.example
+# MCP server + installer
+New-Item -ItemType Directory -Force -Path "$PkgRoot\mcp" | Out-Null
+Copy-Item (Join-Path $Root "mcp\server.py") (Join-Path $PkgRoot "mcp\server.py") -Force
+Copy-Item (Join-Path $Root "mcp\install_mcp.ps1") (Join-Path $PkgRoot "mcp\install_mcp.ps1") -Force
+Copy-Item (Join-Path $Root "mcp\README.md") (Join-Path $PkgRoot "mcp\README.md") -Force
+
+# Package run_daily.ps1 lives at root (not scripts/)
 $envFile = Join-Path $Root ".env"
 $pkgEnv = Join-Path $PkgRoot ".env.example"
 if ((Test-Path $envFile) -and (Test-Path $pkgEnv)) {

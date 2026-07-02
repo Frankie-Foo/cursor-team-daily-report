@@ -31,8 +31,18 @@ python scripts/query_team.py --status        # 提交状态
 
 ## 打包发给同事
 
+**推荐：每人一个预配置 zip（无痛安装）**
+
+```powershell
+python scripts/export_member_credentials.py
+powershell -File scripts/build_personal_packages.ps1
+```
+
+输出：`package/colleague/personal/<用户名>/cursor-daily-report-<用户名>.zip`  
+同事：**解压 → 双击 SETUP.bat → 填 Cursor 项目路径**
+
+通用包（需手填 Token，不推荐）：
+
 ```powershell
 powershell -File scripts/build_colleague_package.ps1
 ```
-
-输出：`package/colleague/cursor-team-daily-report.zip`

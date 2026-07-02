@@ -91,6 +91,12 @@ CREATE INDEX IF NOT EXISTS idx_daily_reports_username ON daily_reports (username
 CREATE INDEX IF NOT EXISTS idx_sessions_report_date ON sessions (report_date);
 CREATE INDEX IF NOT EXISTS idx_weekly_reports_week_label ON weekly_reports (week_label);
 CREATE INDEX IF NOT EXISTS idx_monthly_reports_month_label ON monthly_reports (month_label);
+
+CREATE TABLE IF NOT EXISTS api_tokens (
+    username TEXT PRIMARY KEY,
+    token TEXT NOT NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
 """
 
 
