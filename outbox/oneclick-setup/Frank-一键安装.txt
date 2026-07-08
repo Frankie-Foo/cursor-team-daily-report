@@ -1,0 +1,60 @@
+帮我配置日报自动化，往下按步骤执行不要跳过：
+
+## 1 检查环境
+终端执行: python --version
+要求 >= 3.10，没有就去 https://www.python.org/downloads/ 装。
+终端执行: pip install requests python-dotenv --quiet
+
+## 2 创建目录
+终端执行: mkdir %USERPROFILE%\.cursor\daily-report\config -Force
+终端执行: mkdir %USERPROFILE%\.cursor\daily-report\scripts -Force
+
+## 3 下载脚本（用 Write 工具写入，不要用 Invoke-WebRequest）
+用 Write 工具写入以下文件：
+
+### https://raw.githubusercontent.com/Frankie-Foo/cursor-team-daily-report/main/scripts/report_io.py → %USERPROFILE%\.cursor\daily-report\scripts\report_io.py
+### https://raw.githubusercontent.com/Frankie-Foo/cursor-team-daily-report/main/scripts/publish_daily.py → %USERPROFILE%\.cursor\daily-report\scripts\publish_daily.py
+### https://raw.githubusercontent.com/Frankie-Foo/cursor-team-daily-report/main/scripts/api_client.py → %USERPROFILE%\.cursor\daily-report\scripts\api_client.py
+### https://raw.githubusercontent.com/Frankie-Foo/cursor-team-daily-report/main/scripts/parse_transcripts.py → %USERPROFILE%\.cursor\daily-report\scripts\parse_transcripts.py
+
+## 4 写入 .env
+
+用 Write 工具写入 %USERPROFILE%\.cursor\daily-report\.env，内容：
+
+REPORT_API_URL=https://global-pdca.vertu.cn
+REPORT_API_TOKEN=m4Un4jTYUvLt9gNy7PR_yw9cLSxNYKUtqAdQAh7OQ-U
+CURSOR_REPORT_USER=Frank
+
+## 5 写入 user.json
+
+用 Write 工具写入 %USERPROFILE%\.cursor\daily-report\config\user.json，内容：
+
+{
+  "username": "Frank",
+  "timezone": "Asia/Shanghai",
+  "cursor_workspace": "请替换为你的 Cursor 项目路径，反斜杠改正斜杠",
+  "odoo_user_id": 0
+}
+
+然后把 cursor_workspace 改成你实际的 Cursor 项目根目录。
+
+## 6 创建 Automation
+
+用 Write 工具写入 %USERPROFILE%\.cursor\automations\daily-report-submit.md：
+
+---
+schedule: "30 9 * * 1-5"
+description: "Workday 17:30 auto-submit Cursor daily report"
+---
+执行以下命令提交今天的日报：
+
+cd $env:USERPROFILE\.cursor\daily-report
+python scripts/publish_daily.py --date today --api-only
+
+输出必须包含 "submitted": true, "via": "api"，否则在消息中报告错误。
+
+## 7 试跑
+终端执行: cd %USERPROFILE%\.cursor\daily-report && python scripts/publish_daily.py --date today --api-only
+成功后输出 should include: submitted true via api
+
+全部完成后告诉我「配置完成，每天 17:30 自动提交」。
